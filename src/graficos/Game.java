@@ -1,7 +1,11 @@
 package graficos;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 
@@ -14,6 +18,8 @@ public class Game extends Canvas implements Runnable {
 	private Thread thread;
 	private boolean isRunning = true;
 	
+	private BufferedImage background;
+	
 	public Game() {
 		this.setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
 		frame = new JFrame("Jogo");
@@ -23,6 +29,7 @@ public class Game extends Canvas implements Runnable {
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
+		background = new BufferedImage(WIDTH, HEIGHT,BufferedImage.TYPE_INT_RGB);
 	}
 	
 	public static void main(String[] args) {
@@ -45,7 +52,17 @@ public class Game extends Canvas implements Runnable {
 	}
 	
 	public void render() {
-		
+		BufferStrategy buffer = this.getBufferStrategy();
+		if(buffer == null) {
+			this.createBufferStrategy(3);
+			return;
+		}
+		Graphics g = background.getGraphics();
+		g.setColor(new Color(20,20,20));
+		g.fillRect(0,0,WIDTH, HEIGHT);
+		g = buffer.getDrawGraphics();
+		g.drawImage(background,0, 0, WIDTH*SCALE,HEIGHT*SCALE, null);
+		buffer.show();
 	}
 
 	@Override
